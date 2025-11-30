@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined'); */
+
+/* body {
+  font-family: 'Sora', sans-serif;
+} */
+
+.gradient-hero {
+  background: radial-gradient(circle at 30% 70%, #4c1d11, #121212 40%);
+}
+
+/* Custom color classes */
+.bg-background-light {
+  background-color: #F8F9FA;
+}
+
+.bg-background-dark {
+  background-color: #121212;
+}
+
+.text-background-dark {
+  color: #121212;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
