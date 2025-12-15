@@ -12,16 +12,26 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Config CORS to handle preflight requests properly
-app.use(cors({
+const corsOptions = {
   origin: ["https://gram-checker.vercel.app", "http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200
-}));
+};
 
-// Explicitly handle preflight requests
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight requests for all routes
+app.options('*', cors(corsOptions));
+
+// Add CORS headers to all responses as a fallback
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  next();
+});
 
 app.get("/api/test", (req, res) => res.json({ message: "ok" }));
 

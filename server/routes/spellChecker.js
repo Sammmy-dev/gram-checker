@@ -60,9 +60,13 @@ spellChecker.post("/", async (req, res) => {
   try {
     const correctedText = await main(text);
     console.log('Spell check completed successfully');
+    // Add CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', '*');
     res.json({ correctedText });
   } catch (error) {
     console.error("Error checking spelling:", error);
+    // Add CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', '*');
     res.status(500).json({ error: error.message || "Error checking spelling" });
   }
 });

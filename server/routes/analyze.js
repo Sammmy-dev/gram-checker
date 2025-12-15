@@ -64,9 +64,13 @@ analyzeRouter.post("/", async (req, res) => {
   try {
     const rephrasedSentences = await main(sentence);
     console.log('Analyze completed successfully');
+    // Add CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', '*');
     res.json({ rephrasedSentences });
   } catch (error) {
     console.error("Error processing sentence:", error);
+    // Add CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', '*');
     res.status(500).json({ error: error.message || "Error processing sentence" });
   }
 });

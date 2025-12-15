@@ -60,9 +60,13 @@ grammarCheck.post("/", async (req, res) => {
   try {
     const correctedText = await main(text);
     console.log('Grammar check completed successfully');
+    // Add CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', '*');
     res.json({ correctedText });
   } catch (error) {
     console.error("Error checking grammar:", error);
+    // Add CORS headers explicitly
+    res.header('Access-Control-Allow-Origin', '*');
     res.status(500).json({ error: error.message || "Error checking grammar" });
   }
 });
