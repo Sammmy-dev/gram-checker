@@ -12,7 +12,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 //config cors
-app.use(cors());
+app.use(cors({ origin: 'https://gram-checker.vercel.app' }));
 app.use(express.json()); //for parsing application/json
 
 //routes
