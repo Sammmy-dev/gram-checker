@@ -6,6 +6,21 @@ import OpenAI from "openai";
 
 const spellChecker = express.Router();
 
+// Add CORS middleware to this router
+spellChecker.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
+
 export async function main(text) {
   console.log('Spell check main function called with text length:', text.length);
   try {
@@ -60,13 +75,9 @@ spellChecker.post("/", async (req, res) => {
   try {
     const correctedText = await main(text);
     console.log('Spell check completed successfully');
-    // Add CORS headers explicitly
-    res.header('Access-Control-Allow-Origin', '*');
     res.json({ correctedText });
   } catch (error) {
     console.error("Error checking spelling:", error);
-    // Add CORS headers explicitly
-    res.header('Access-Control-Allow-Origin', '*');
     res.status(500).json({ error: error.message || "Error checking spelling" });
   }
 });

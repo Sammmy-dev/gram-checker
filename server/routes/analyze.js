@@ -6,6 +6,21 @@ import OpenAI from "openai";
 
 const analyzeRouter = express.Router();
 
+// Add CORS middleware to this router
+analyzeRouter.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
+
 export async function main(sentence) {
   console.log('Analyze main function called with sentence length:', sentence.length);
   try {
@@ -64,13 +79,9 @@ analyzeRouter.post("/", async (req, res) => {
   try {
     const rephrasedSentences = await main(sentence);
     console.log('Analyze completed successfully');
-    // Add CORS headers explicitly
-    res.header('Access-Control-Allow-Origin', '*');
     res.json({ rephrasedSentences });
   } catch (error) {
     console.error("Error processing sentence:", error);
-    // Add CORS headers explicitly
-    res.header('Access-Control-Allow-Origin', '*');
     res.status(500).json({ error: error.message || "Error processing sentence" });
   }
 });

@@ -11,25 +11,19 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
-// Config CORS to handle preflight requests properly
-const corsOptions = {
-  origin: ["https://gram-checker.vercel.app", "http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-
-// Explicitly handle preflight requests for all routes
-app.options('*', cors(corsOptions));
-
-// Add CORS headers to all responses as a fallback
+// Custom CORS middleware to ensure headers are always set
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Max-Age', '86400'); // 24 hours
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
   next();
 });
 
@@ -41,6 +35,17 @@ app.use(express.json()); //for parsing application/json
 app.use("/api/analyze", analyzeRouter);
 app.use("/api/grammarcheck", grammarCheck);
 app.use("/api/spellcheck", spellChecker);
+
+// Global error handler
+app.use((err, req, res, next) => {
+  // Ensure CORS headers are set even in error responses
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
 //start server
 app.listen(port, () => {

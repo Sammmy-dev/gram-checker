@@ -6,6 +6,21 @@ import OpenAI from "openai";
 
 const grammarCheck = express.Router();
 
+// Add CORS middleware to this router
+grammarCheck.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
+
 export async function main(text) {
   console.log('Grammar check main function called with text length:', text.length);
   try {
@@ -60,13 +75,9 @@ grammarCheck.post("/", async (req, res) => {
   try {
     const correctedText = await main(text);
     console.log('Grammar check completed successfully');
-    // Add CORS headers explicitly
-    res.header('Access-Control-Allow-Origin', '*');
     res.json({ correctedText });
   } catch (error) {
     console.error("Error checking grammar:", error);
-    // Add CORS headers explicitly
-    res.header('Access-Control-Allow-Origin', '*');
     res.status(500).json({ error: error.message || "Error checking grammar" });
   }
 });
