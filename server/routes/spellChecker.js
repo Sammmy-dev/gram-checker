@@ -7,6 +7,7 @@ import OpenAI from "openai";
 const spellChecker = express.Router();
 
 export async function main(text) {
+  console.log('Spell check main function called with text length:', text.length);
   try {
     // Access the token inside the function to ensure it's loaded
     const token = process.env["GITHUB_TOKEN"];
@@ -39,6 +40,7 @@ export async function main(text) {
     });
 
     const correctedText = response.choices[0].message.content.trim();
+    console.log('Spell check OpenAI response received');
     return correctedText;
   } catch (error) {
     console.error("Error checking spelling:", error);
@@ -47,6 +49,7 @@ export async function main(text) {
 }
 
 spellChecker.post("/", async (req, res) => {
+  console.log('Spell check POST request received');
   const { text } = req.body;
   
   // Validate input
@@ -56,6 +59,7 @@ spellChecker.post("/", async (req, res) => {
   
   try {
     const correctedText = await main(text);
+    console.log('Spell check completed successfully');
     res.json({ correctedText });
   } catch (error) {
     console.error("Error checking spelling:", error);

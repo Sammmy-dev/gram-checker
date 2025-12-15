@@ -7,6 +7,7 @@ import OpenAI from "openai";
 const analyzeRouter = express.Router();
 
 export async function main(sentence) {
+  console.log('Analyze main function called with sentence length:', sentence.length);
   try {
     // Access the token inside the function to ensure it's loaded
     const token = process.env["GITHUB_TOKEN"];
@@ -43,7 +44,7 @@ export async function main(sentence) {
     const rephrasedSentences = response.choices.map(choice => 
       choice.message.content.trim()
     ).slice(0, 3); // Limit to 3 sentences as in the original
-
+    console.log('Analyze OpenAI response received');
     return rephrasedSentences;
   } catch (error) {
     console.error("Error processing sentence:", error);
@@ -52,6 +53,7 @@ export async function main(sentence) {
 }
 
 analyzeRouter.post("/", async (req, res) => {
+  console.log('Analyze POST request received');
   const { sentence } = req.body;
 
   // Validate input
@@ -61,6 +63,7 @@ analyzeRouter.post("/", async (req, res) => {
   
   try {
     const rephrasedSentences = await main(sentence);
+    console.log('Analyze completed successfully');
     res.json({ rephrasedSentences });
   } catch (error) {
     console.error("Error processing sentence:", error);
